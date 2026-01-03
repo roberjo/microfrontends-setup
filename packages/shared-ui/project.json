@@ -1,0 +1,17 @@
+{
+  "name": "shared-ui",
+  "projectType": "library",
+  "sourceRoot": "packages/shared-ui/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["dist/packages/shared-ui"],
+      "options": {
+        "main": "packages/shared-ui/src/index.ts",
+        "tsConfig": "packages/shared-ui/tsconfig.json",
+        "outputPath": "dist/packages/shared-ui"
+      }
+    }
+  },
+  "tags": ["scope:shared"]
+}

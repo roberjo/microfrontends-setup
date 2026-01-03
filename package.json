@@ -12,7 +12,19 @@
     "affected:test": "nx affected -t test",
     "affected:lint": "nx affected -t lint"
   },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
   "devDependencies": {
-    "nx": "20.2.0"
+    "@originjs/vite-plugin-federation": "^1.4.0",
+    "@nx/js": "^22.3.3",
+    "@nx/react": "^22.3.3",
+    "@nx/vite": "^22.3.3",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "nx": "^22.3.3"
   }
 }

@@ -11,6 +11,16 @@ User stories:
 - As a developer, I can run a single command to start the shell app locally.
 - As a developer, I can add a new microfrontend with a standard template.
 
+## Phase 0.5: Remediation (Current Gaps)
+Tasks:
+- Add Nx project definitions (`project.json`) by scaffolding shell, MFEs, and shared libs.
+- Implement initial shell host and at least one MFE remote so `nx dev` runs.
+- Expand root `README.md` with setup, env vars, and local dev steps.
+
+User stories:
+- As a developer, I can run `pnpm dev` without errors.
+- As a developer, I can follow the README to start the shell and remotes locally.
+
 ## Phase 1: Monorepo + Tooling
 Tasks:
 - Initialize pnpm workspaces and Nx with per-app `project.json`.

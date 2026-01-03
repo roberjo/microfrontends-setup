@@ -29,10 +29,11 @@ Set local remote URLs via env vars before starting the shell.
 Example:
 ```bash
 export VITE_REMOTE_MF_ORDERS_URL=http://localhost:3001/remoteEntry.js
-export VITE_REMOTE_MF_WEALTH_URL=http://localhost:3002/remoteEntry.js
+export VITE_REMOTE_MF_ADMIN_URL=http://localhost:3002/remoteEntry.js
 ```
 
 ## Debugging Tips
 - Start MFEs first, then the shell.
 - Keep shared UI and auth packages linked via workspace dependencies.
 - If a remote fails to load, verify CORS and `remoteEntry.js` URL.
+- On Windows-mounted drives, use `node-linker=hoisted` in `.npmrc` to avoid symlink issues.
