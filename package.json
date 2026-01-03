@@ -1,0 +1,20 @@
+{
+  "name": "microfrontends-setup",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "nx": "nx",
+    "start": "nx serve shell",
+    "build": "nx build",
+    "lint": "nx lint",
+    "test": "nx test",
+    "affected": "nx affected -t lint,test,build"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@nx/js": "22.3.3",
+    "@nx/workspace": "22.3.3",
+    "nx": "22.3.3"
+  }
+}

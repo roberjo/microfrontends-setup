@@ -1,0 +1,23 @@
+{
+  "name": "mfe-dashboard",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mfe-dashboard/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "dist/apps/mfe-dashboard",
+        "configFile": "apps/mfe-dashboard/vite.config.ts"
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "configFile": "apps/mfe-dashboard/vite.config.ts",
+        "port": 4201
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,23 @@
+{
+  "name": "mfe-admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mfe-admin/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "dist/apps/mfe-admin",
+        "configFile": "apps/mfe-admin/vite.config.ts"
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "configFile": "apps/mfe-admin/vite.config.ts",
+        "port": 4202
+      }
+    }
+  },
+  "tags": []
+}
