@@ -41,6 +41,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.pnpm-store/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -90,6 +91,11 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+build
+
+# Vite build output
+**/dist
+**/.vite
 
 # Gatsby files
 .cache/
@@ -124,6 +130,14 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Nx cache
+.nx/
+
+# IDE/editor files
+.idea/
+.vscode/
+.DS_Store
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test

@@ -53,6 +53,13 @@ flowchart TB
 - Each MFE builds to a versioned remote entry (for example, `remoteEntry.js`).
 - Shell app consumes remotes via environment-configured URLs.
 - Shared UI and auth packages are versioned and published internally.
+- Shell and each MFE version, run, and deploy independently, with environment-specific remote URLs.
+- Customizations are isolated per app, while shared packages remain stable and versioned.
+
+## Local Development
+- Developers can run the shell alone or the shell with selected MFEs.
+- Remote URLs point to local dev servers during development (for example, `http://localhost:3001/remoteEntry.js`).
+- The shell loads local remotes via environment variables to support debugging across apps.
 
 ## Key Repo Layout (Target)
 - `apps/shell/`
@@ -65,3 +72,11 @@ flowchart TB
 - Left navigation for lines of business and shared tools.
 - Top bar with user avatar, notifications, settings, and theme toggle.
 - Shared layout primitives in `packages/shared-ui` to keep LOBs consistent.
+
+## Line of Business Modules (Target)
+- `apps/mf-retail-banking/`: customer onboarding flows, KYC checklist, account opening, document collection.
+- `apps/mf-wealth/`: portfolio intake, suitability review, investment profile capture, advisor notes.
+- `apps/mf-insurance/`: policy intake, coverage comparison, claims intake, renewal workflows.
+- `apps/mf-treasury/`: cash management dashboards, liquidity views, approval queues.
+- `apps/mf-products/`: sales tools for financial products, annuity rate-of-return comparisons, CD ladders, provider comparisons.
+- `apps/mf-admin/`: user access grants/revokes, role assignments, access reviews, audit logs.

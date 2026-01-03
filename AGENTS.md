@@ -20,17 +20,17 @@ Each microfrontend should be deployable independently and expose a clearly versi
 Add a workspace-level `package.json` with explicit scripts and document them here. Suggested commands:
 
 ```bash
-npm run dev            # start shell and selected microfrontends
-npm run dev:shell      # shell app only
-npm run build          # build all packages
-npm run test           # unit tests
-npm run test:e2e        # end-to-end tests
+pnpm run dev            # start shell and selected microfrontends
+pnpm run dev:shell      # shell app only
+pnpm run build          # build all packages
+pnpm run test           # unit tests
+pnpm run test:e2e        # end-to-end tests
 ```
 
 ## Coding Style & Naming Conventions
 Use TypeScript, 2-space indentation, and named exports for shared modules. Prefer `PascalCase` for components, `camelCase` for functions, and `kebab-case` for packages (for example, `mf-orders`).
 
-Configure ESLint + Prettier and keep configs in `configs/` with root-level stubs. Document commands like `npm run lint` and `npm run format`.
+Configure ESLint + Prettier and keep configs in `configs/` with root-level stubs. Document commands like `pnpm run lint` and `pnpm run format`.
 
 ## Testing Guidelines
 Use React Testing Library + Vitest for unit tests and Playwright for E2E. Keep tests easy to find:
