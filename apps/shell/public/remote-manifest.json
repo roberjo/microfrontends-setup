@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "remotes": {
+    "mfeDashboard": {
+      "url": "http://localhost:4201/assets/remoteEntry.js",
+      "scope": "mfeDashboard",
+      "module": "./App"
+    },
+    "mfeAdmin": {
+      "url": "http://localhost:4202/assets/remoteEntry.js",
+      "scope": "mfeAdmin",
+      "module": "./App"
+    }
+  }
+}

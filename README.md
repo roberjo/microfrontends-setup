@@ -39,6 +39,20 @@ docs/
 4. Shared UI and utilities live in workspace packages and are also shared in federation config.
 5. Local dev runs the shell and remotes concurrently via Nx targets.
 
+## Scaffolded PoC
+
+Local dev:
+
+```
+pnpm install
+pnpm nx run-many -t serve --projects=shell,mfe-dashboard,mfe-admin
+```
+
+Notes:
+
+- `apps/shell/public/remote-manifest.json` is a sample manifest fetched by the shell at runtime.
+- Module Federation remotes are configured in `apps/shell/vite.config.ts` for local dev defaults.
+
 ## Build and deploy workflow
 
 - Each microfrontend builds its own static assets and `remoteEntry.js`.
