@@ -1,9 +1,11 @@
 # Architecture Overview
 
 ## Goals
-- Prove a React microfrontend architecture with a shell app and multiple independently deployed submodules.
-- Enforce RBAC in each microfrontend using OAuth 2.0 JWT claims.
-- Deliver a sleek, modern UI with consistent theming and shared UI primitives.
+- Prove a React microfrontend architecture for a financial services portal.
+- Provide a shell app and multiple independently deployed lines of business.
+- Enforce RBAC per line of business using OAuth 2.0 JWT claims.
+- Enable admin-managed access grants, removals, and access reviews.
+- Deliver a sleek, professional UI with consistent theming and shared UI primitives.
 
 ## Target Tech Stack
 - React + TypeScript + Vite
@@ -17,9 +19,9 @@
 flowchart LR
   User((User)) --> Shell[Shell App]
   Shell --> IdP[OAuth2/OIDC Provider]
-  Shell --> MFE1[Microfrontend A]
-  Shell --> MFE2[Microfrontend B]
-  Shell --> MFE3[Microfrontend C]
+  Shell --> MFE1[LOB MFE: Retail Banking]
+  Shell --> MFE2[LOB MFE: Wealth]
+  Shell --> MFE3[LOB MFE: Insurance]
   Shell --> SharedUI[Shared UI Package]
   Shell --> AuthPkg[Auth/RBAC Package]
   MFE1 --> AuthPkg
@@ -45,6 +47,7 @@ flowchart TB
   - parse and validate token claims
   - enforce feature-level access guards
   - provide hooks like `useAuth()` and `useHasPermission()`
+- Admin users use a shared access management UI to grant and revoke LOB access and view current access.
 
 ## Deployment Model
 - Each MFE builds to a versioned remote entry (for example, `remoteEntry.js`).
@@ -57,3 +60,8 @@ flowchart TB
 - `packages/shared-ui/`
 - `packages/auth/`
 - `configs/`
+
+## UI Shell Layout
+- Left navigation for lines of business and shared tools.
+- Top bar with user avatar, notifications, settings, and theme toggle.
+- Shared layout primitives in `packages/shared-ui` to keep LOBs consistent.

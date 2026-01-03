@@ -24,9 +24,11 @@ Tasks:
 - Create `apps/shell` with routing and layout.
 - Implement Module Federation host config.
 - Add shared UI theme and layout shell.
+- Add shell UI chrome (left nav, top bar, notifications, settings, theme toggle).
 
 User stories:
 - As a user, I can navigate between microfrontend routes.
+- As a user, I can access account settings, notifications, and theme controls.
 
 ## Phase 3: Microfrontends
 Tasks:
@@ -42,9 +44,13 @@ Tasks:
 - Implement OAuth login flow in the shell.
 - Add JWT claim parsing in `packages/auth`.
 - Add route guards and permission checks per MFE.
+- Implement Access Management UI for admins.
+- Integrate entitlement updates with the IdP or entitlement service.
 
 User stories:
 - As a user, I only see features my role allows.
+- As an admin, I can grant or revoke access to a line of business.
+- As an admin, I can review current user access per LOB.
 
 ## Phase 5: CI/CD + IaC
 Tasks:
