@@ -8,7 +8,7 @@
 ## Target Tech Stack
 - React + TypeScript + Vite
 - Module Federation for runtime composition
-- pnpm workspaces + Turborepo
+- pnpm workspaces + Nx
 - ESLint + Prettier, Vitest, Playwright
 - Storybook for shared UI (optional but recommended)
 

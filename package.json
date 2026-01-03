@@ -1,0 +1,18 @@
+{
+  "name": "microfrontends-setup",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "dev": "nx run-many -t dev --parallel",
+    "dev:shell": "nx run shell:dev",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "affected:build": "nx affected -t build",
+    "affected:test": "nx affected -t test",
+    "affected:lint": "nx affected -t lint"
+  },
+  "devDependencies": {
+    "nx": "20.2.0"
+  }
+}

@@ -12,7 +12,7 @@ User stories:
 
 ## Phase 1: Monorepo + Tooling
 Tasks:
-- Initialize pnpm workspaces and Turborepo.
+- Initialize pnpm workspaces and Nx.
 - Add ESLint, Prettier, TypeScript, and Vite templates.
 - Create `packages/shared-ui` and `packages/auth` scaffolds.
 

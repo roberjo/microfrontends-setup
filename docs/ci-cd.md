@@ -12,9 +12,9 @@ Recommended workflows:
 - Triggers: `pull_request`, `push` to `main`
 - Steps:
   - Install pnpm and dependencies
-  - Lint and typecheck
-  - Unit tests (Vitest)
-  - Build affected apps and packages
+  - Lint and typecheck (`nx affected -t lint`)
+  - Unit tests (Vitest via `nx affected -t test`)
+  - Build affected apps and packages (`nx affected -t build`)
   - Upload build artifacts per app
 
 2) `release.yml`
