@@ -8,9 +8,13 @@ pnpm dev
 
 Shell env vars for local remotes:
 ```bash
-export VITE_REMOTE_MF_ORDERS_URL=http://localhost:3001/remoteEntry.js
-export VITE_REMOTE_MF_ADMIN_URL=http://localhost:3002/remoteEntry.js
+export VITE_REMOTE_MF_ORDERS_URL=http://localhost:3001/assets/remoteEntry.js
+export VITE_REMOTE_MF_ADMIN_URL=http://localhost:3002/assets/remoteEntry.js
 ```
+
+Preview vs dev servers:
+- Use `pnpm nx run mf-*:dev` on ports 3001/3002 for fast local iteration. In dev mode, the shell loads MFEs via the dev server endpoints.
+- Use `pnpm nx run mf-*:preview` on ports 4301/4302 when you need the built `remoteEntry.js` (Module Federation preview). This matches how remotes are consumed in production.
 
 ## Development Steps (Remediation)
 The following steps address current workspace gaps so `nx` scripts can run and the POC is executable.
