@@ -5,7 +5,7 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["dist/packages/auth"],
+      "outputs": ["{workspaceRoot}/dist/packages/auth"],
       "options": {
         "main": "packages/auth/src/index.ts",
         "tsConfig": "packages/auth/tsconfig.json",
