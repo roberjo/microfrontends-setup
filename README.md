@@ -1,44 +1,105 @@
-# microfrontends-setup
+# FinServe Portal Microfrontends (POC)
 
-## Local Development
-```bash
-pnpm install
-pnpm dev
+A proof-of-concept monorepo for a React microfrontend system. The shell app composes independently versioned MFEs with shared UI and auth utilities. Designed to mimic an enterprise financial services portal.
+
+## Overview
+
+- Shell app hosts MFEs via Module Federation at runtime.
+- MFEs are independently deployable and versioned.
+- Shared UI tokens/components live in `packages/shared-ui`.
+- OAuth/JWT helpers and RBAC utilities live in `packages/auth`.
+
+## Repository Structure
+
+```
+apps/
+  shell/            # Host application
+  mf-orders/        # Retail Banking MFE
+  mf-admin/         # Admin / Access Governance MFE
+packages/
+  shared-ui/        # Design system
+  auth/             # OAuth/JWT + RBAC utilities
+configs/            # Shared tool config (eslint/prettier)
 ```
 
-Shell env vars for local remotes:
+## Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+
+## Quick Start
+
+```bash
+pnpm install
+pnpm run dev
+```
+
+Shell runs on `http://localhost:3000` and loads MFEs by URL.
+
+## Environment Variables
+
+The shell uses these remote URLs at build time:
+
 ```bash
 export VITE_REMOTE_MF_ORDERS_URL=http://localhost:3001/assets/remoteEntry.js
 export VITE_REMOTE_MF_ADMIN_URL=http://localhost:3002/assets/remoteEntry.js
 ```
 
-Preview vs dev servers:
-- Use `pnpm nx run mf-*:dev` on ports 3001/3002 for fast local iteration. In dev mode, the shell loads MFEs via the dev server endpoints.
-- Use `pnpm nx run mf-*:preview` on ports 4301/4302 when you need the built `remoteEntry.js` (Module Federation preview). This matches how remotes are consumed in production.
+## Dev vs Preview (MFEs)
 
-## Development Steps (Remediation)
-The following steps address current workspace gaps so `nx` scripts can run and the POC is executable.
+- **Dev**: `pnpm nx run mf-*:dev` (ports 3001/3002). Fast iteration via Vite dev server.
+- **Preview**: `pnpm nx run mf-*:preview` (ports 4301/4302). Serves built `remoteEntry.js` like production.
 
-1) Scaffold Nx projects for the shell and MFEs
-```bash
-pnpm dlx nx@latest g @nx/react:app shell --bundler=vite --directory=apps/shell
-pnpm dlx nx@latest g @nx/react:app mf-orders --bundler=vite --directory=apps/mf-orders
-pnpm dlx nx@latest g @nx/react:app mf-admin --bundler=vite --directory=apps/mf-admin
+Use preview when you need parity with production Module Federation behavior.
+
+## Deep Links
+
+The shell routes MFEs under:
+
+- Retail Banking: `/retail/*`
+- Admin: `/admin/*`
+
+Additional deep-link entry points are mapped for convenience:
+
+- Retail Banking: `/applications/*`
+- Admin: `/approvals/*`, `/users/*`
+
+Example:
+
+```
+http://localhost:3000/applications/APP-2045
 ```
 
-2) Add shared libraries
+## Scripts
+
 ```bash
-pnpm dlx nx@latest g @nx/react:lib shared-ui --directory=packages/shared-ui
-pnpm dlx nx@latest g @nx/js:lib auth --directory=packages/auth
+pnpm run dev            # start shell and MFEs
+pnpm run dev:shell      # shell only
+pnpm run build          # build all projects
+pnpm run test           # run all tests (if configured)
+pnpm run lint           # lint all projects
 ```
 
-3) Configure Module Federation
-- Add host configuration to `apps/shell` and remotes to each MFE.
-- Wire remote URLs via env vars (for example, `VITE_REMOTE_MF_ORDERS_URL`).
+## Testing
 
-4) Verify local dev
-```bash
-pnpm install
-pnpm dev
-```
+Unit tests are intended to use Vitest + React Testing Library. E2E uses Playwright. Add tests under `test/` or `__tests__/` with `*.test.*` or `*.spec.*` naming.
 
+## Deployment
+
+See `docs/aws-deployment.md` for S3 + CloudFront deployment instructions.
+
+## Security
+
+- Do not commit secrets.
+- Add `.env.example` with OAuth issuer/audience placeholders.
+- RBAC roles and claim mapping should be documented in `packages/auth/README.md`.
+
+## Contributing
+
+- Use concise, imperative commit messages (example: “Add shell routing”).
+- Keep changes small and scoped.
+- Include verification steps and screenshots for UI changes.
+
+## License
+
+MIT (see `LICENSE`).
