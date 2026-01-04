@@ -9,6 +9,19 @@ A proof-of-concept monorepo for a React microfrontend system. The shell app comp
 - Shared UI tokens/components live in `packages/shared-ui`.
 - OAuth/JWT helpers and RBAC utilities live in `packages/auth`.
 
+## Architecture (Text Diagram)
+
+```
+Browser
+  └─ Shell (apps/shell)
+       ├─ Loads MFEs via Module Federation
+       │    ├─ Retail Banking (apps/mf-orders)
+       │    └─ Admin (apps/mf-admin)
+       └─ Shared packages
+            ├─ UI tokens/components (packages/shared-ui)
+            └─ Auth + RBAC utilities (packages/auth)
+```
+
 ## Repository Structure
 
 ```
@@ -84,9 +97,38 @@ pnpm run lint           # lint all projects
 
 Unit tests are intended to use Vitest + React Testing Library. E2E uses Playwright. Add tests under `test/` or `__tests__/` with `*.test.*` or `*.spec.*` naming.
 
-## Deployment
+## Deployment (Cloudflare Pages)
 
-See `docs/aws-deployment.md` for S3 + CloudFront deployment instructions.
+This setup deploys each MFE and the shell as separate Cloudflare Pages projects so the shell can consume the remote `remoteEntry.js` files by URL.
+
+### Step-by-step: Create Cloudflare Pages Projects
+
+1) Sign in to Cloudflare and open **Pages**.
+2) Click **Create a project** → **Connect to Git**.
+3) Choose this repo and create three separate Pages projects:
+   - **mf-orders**: build command `pnpm nx run mf-orders:build`, output `dist/apps/mf-orders`
+   - **mf-admin**: build command `pnpm nx run mf-admin:build`, output `dist/apps/mf-admin`
+   - **shell**: build command `pnpm nx run shell:build`, output `dist/apps/shell`
+4) For each project, set **Framework preset** to **None** and **Build command/output** as listed above.
+5) In each project’s **Settings → Environment Variables**, add:
+   - `NODE_VERSION=20`
+   - `PNPM_VERSION=9.12.0`
+6) In the **shell** project only, add:
+   - `VITE_REMOTE_MF_ORDERS_URL=https://<mf-orders>.pages.dev/assets/remoteEntry.js`
+   - `VITE_REMOTE_MF_ADMIN_URL=https://<mf-admin>.pages.dev/assets/remoteEntry.js`
+7) Deploy the MFEs first, then trigger the shell build so it embeds the deployed remote URLs.
+
+Notes:
+- MFEs include a `_headers` file to allow cross-origin loading of `remoteEntry.js`.
+- If you use custom domains, update the `VITE_REMOTE_*` values accordingly.
+
+### Troubleshooting
+
+- **Shell loads but MFEs are blank**: confirm the shell env vars point to valid `remoteEntry.js` URLs, then redeploy the shell.
+- **CORS errors for `remoteEntry.js`**: ensure `_headers` exists in each MFE at `apps/mf-*/public/_headers`, rebuild, and redeploy.
+- **404 for `remoteEntry.js`**: check the Pages project output path matches `dist/apps/<project>`.
+- **Shell still pointing to old remotes**: redeploy the shell after updating `VITE_REMOTE_*` variables.
+- **pnpm install fails with EACCES**: ensure `.npmrc` uses a repo-local `store-dir=.pnpm-store` instead of a machine-specific path.
 
 ## Security
 
