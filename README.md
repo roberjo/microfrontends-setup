@@ -129,6 +129,7 @@ Notes:
 - **404 for `remoteEntry.js`**: check the Pages project output path matches `dist/apps/<project>`.
 - **Shell still pointing to old remotes**: redeploy the shell after updating `VITE_REMOTE_*` variables.
 - **pnpm install fails with EACCES**: ensure `.npmrc` uses a repo-local `store-dir=.pnpm-store` instead of a machine-specific path.
+- **Router invariant errors in console**: ensure MFEs do not wrap their own `BrowserRouter` when loaded by the shell.
 
 ## Security
 

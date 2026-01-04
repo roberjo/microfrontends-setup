@@ -1,13 +1,6 @@
 import "./styles.css";
 import { useState } from "react";
-import {
-  BrowserRouter,
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useParams
-} from "react-router-dom";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 
 function MfeBreadcrumbs() {
   const location = useLocation();
@@ -389,13 +382,11 @@ function UserDetail() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AdminDashboard />} />
-        <Route path="/approvals/:id" element={<ApprovalDetail />} />
-        <Route path="/users/:id" element={<UserDetail />} />
-        <Route path="*" element={<AdminDashboard />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<AdminDashboard />} />
+      <Route path="/approvals/:id" element={<ApprovalDetail />} />
+      <Route path="/users/:id" element={<UserDetail />} />
+      <Route path="*" element={<AdminDashboard />} />
+    </Routes>
   );
 }

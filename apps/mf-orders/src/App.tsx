@@ -1,13 +1,6 @@
 import "./styles.css";
 import { useState } from "react";
-import {
-  BrowserRouter,
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useParams
-} from "react-router-dom";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 
 function MfeBreadcrumbs() {
   const location = useLocation();
@@ -360,12 +353,10 @@ function ApplicationDetail() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<OrdersDashboard />} />
-        <Route path="/applications/:id" element={<ApplicationDetail />} />
-        <Route path="*" element={<OrdersDashboard />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<OrdersDashboard />} />
+      <Route path="/applications/:id" element={<ApplicationDetail />} />
+      <Route path="*" element={<OrdersDashboard />} />
+    </Routes>
   );
 }
