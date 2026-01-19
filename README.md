@@ -101,6 +101,12 @@ Unit tests are intended to use Vitest + React Testing Library. E2E uses Playwrig
 
 This setup deploys each MFE and the shell as separate Cloudflare Pages projects so the shell can consume the remote `remoteEntry.js` files by URL.
 
+## Live Demo
+
+Shell (Cloudflare Pages): https://shell-cy8.pages.dev/
+Orders MFE (Cloudflare Pages): https://mf-orders.pages.dev/
+Admin MFE (Cloudflare Pages): https://mf-admin-portal.pages.dev/
+
 ### Step-by-step: Create Cloudflare Pages Projects
 
 1) Sign in to Cloudflare and open **Pages**.
