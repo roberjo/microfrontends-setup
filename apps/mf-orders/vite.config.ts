@@ -6,10 +6,16 @@ import federation from "@originjs/vite-plugin-federation";
 
 const appRoot = fileURLToPath(new URL(".", import.meta.url));
 
+const workspaceRoot = resolve(appRoot, "../..");
+
 export default defineConfig({
   root: appRoot,
   resolve: {
-    dedupe: ["react", "react-dom", "react-router-dom"]
+    dedupe: ["react", "react-dom", "react-router-dom"],
+    alias: {
+      "@finserve/shared-ui": resolve(workspaceRoot, "packages/shared-ui/src/index.ts"),
+      "@finserve/auth": resolve(workspaceRoot, "packages/auth/src/index.ts")
+    }
   },
   plugins: [
     react(),

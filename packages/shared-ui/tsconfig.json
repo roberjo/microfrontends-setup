@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "../../dist/packages/shared-ui"
+    "outDir": "../../dist/packages/shared-ui",
+    "jsx": "react-jsx",
+    "esModuleInterop": true
   },
   "include": ["src"]
 }

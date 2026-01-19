@@ -65,7 +65,11 @@ export default defineConfig(({ mode }) => {
       include: ["react", "react-dom", "react-router-dom"]
     },
     resolve: {
-      dedupe: ["react", "react-dom", "react-router-dom"]
+      dedupe: ["react", "react-dom", "react-router-dom"],
+      alias: {
+        "@finserve/shared-ui": `${workspaceRoot}/packages/shared-ui/src/index.ts`,
+        "@finserve/auth": `${workspaceRoot}/packages/auth/src/index.ts`
+      }
     },
     server: {
       port: 3000,

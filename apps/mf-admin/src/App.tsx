@@ -1,11 +1,122 @@
 import "./styles.css";
 import { useState } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
+import {
+  Breadcrumbs,
+  KPIGrid,
+  Panel,
+  PanelHeader,
+  PageHeader,
+  FilterForm,
+  DataTable,
+  StatusBadge,
+  RiskBadge,
+  Pill,
+  DetailGrid,
+  DetailItem,
+  type KPI,
+  type BreadcrumbItem,
+  type FilterField,
+  type TableColumn,
+} from "@finserve/shared-ui";
 
-function MfeBreadcrumbs() {
+interface Approval {
+  id: string;
+  requester: string;
+  lob: string;
+  role: string;
+  risk: string;
+  eta: string;
+}
+
+interface AccessRow {
+  user: string;
+  lob: string;
+  role: string;
+  status: string;
+}
+
+const kpis: KPI[] = [
+  { label: "Active Users", value: "1,284", delta: "+3%" },
+  { label: "Pending Approvals", value: "18", delta: "-5" },
+  { label: "MFA Coverage", value: "96%", delta: "+1.2%" },
+  { label: "Policy Exceptions", value: "6", delta: "+1" },
+];
+
+const approvals: Approval[] = [
+  {
+    id: "APR-1021",
+    requester: "s.lopez@finserve.com",
+    lob: "Wealth",
+    role: "Advisor",
+    risk: "Low",
+    eta: "2h",
+  },
+  {
+    id: "APR-1017",
+    requester: "k.patel@finserve.com",
+    lob: "Treasury",
+    role: "Manager",
+    risk: "Medium",
+    eta: "4h",
+  },
+];
+
+const accessRows: AccessRow[] = [
+  { user: "j.smith@finserve.com", lob: "Retail Banking", role: "Analyst", status: "Active" },
+  { user: "m.lee@finserve.com", lob: "Wealth", role: "Advisor", status: "Pending" },
+  { user: "a.patel@finserve.com", lob: "Insurance", role: "Admin", status: "Active" },
+];
+
+const audit = [
+  "Role change for j.smith@finserve.com",
+  "MFA reset approved for a.patel@finserve.com",
+  "Access revoked for contractor m.lee@finserve.com",
+];
+
+const filterFields: FilterField[] = [
+  { id: "search", label: "Search", type: "text", placeholder: "User, team, or role" },
+  {
+    id: "lob",
+    label: "Line of business",
+    type: "select",
+    options: [
+      { value: "", label: "All lines" },
+      { value: "retail", label: "Retail Banking" },
+      { value: "wealth", label: "Wealth" },
+      { value: "treasury", label: "Treasury" },
+      { value: "insurance", label: "Insurance" },
+    ],
+  },
+  {
+    id: "role",
+    label: "Role",
+    type: "select",
+    options: [
+      { value: "", label: "All roles" },
+      { value: "analyst", label: "Analyst" },
+      { value: "advisor", label: "Advisor" },
+      { value: "manager", label: "Manager" },
+      { value: "admin", label: "Admin" },
+    ],
+  },
+  {
+    id: "status",
+    label: "Status",
+    type: "select",
+    options: [
+      { value: "", label: "All statuses" },
+      { value: "active", label: "Active" },
+      { value: "pending", label: "Pending" },
+      { value: "revoked", label: "Revoked" },
+    ],
+  },
+];
+
+function useAdminBreadcrumbs(): BreadcrumbItem[] {
   const location = useLocation();
   const parts = location.pathname.split("/").filter(Boolean);
-  const trail = [{ label: "Admin", to: "/" }];
+  const trail: BreadcrumbItem[] = [{ label: "Admin", to: "/" }];
 
   if (parts[0] === "approvals" && parts[1]) {
     trail.push({ label: "Approvals", to: "/" });
@@ -16,261 +127,155 @@ function MfeBreadcrumbs() {
     trail.push({ label: parts[1], to: `/users/${parts[1]}` });
   }
 
-  return (
-    <div className="mfe-breadcrumbs">
-      {trail.map((item, index) => (
-        <span key={`${item.to}-${index}`}>
-          {index > 0 && <span className="crumb-sep">/</span>}
-          {index < trail.length - 1 ? (
-            <Link className="crumb-link" to={item.to}>
-              {item.label}
-            </Link>
-          ) : (
-            <span className="crumb-current">{item.label}</span>
-          )}
-        </span>
-      ))}
-    </div>
-  );
+  return trail;
 }
-
-const accessRows = [
-  {
-    user: "j.smith@finserve.com",
-    lob: "Retail Banking",
-    role: "Analyst",
-    status: "Active"
-  },
-  {
-    user: "m.lee@finserve.com",
-    lob: "Wealth",
-    role: "Advisor",
-    status: "Pending"
-  },
-  {
-    user: "a.patel@finserve.com",
-    lob: "Insurance",
-    role: "Admin",
-    status: "Active"
-  }
-];
 
 function AdminDashboard() {
   const [compactRows, setCompactRows] = useState(false);
-  const kpis = [
-    { label: "Active Users", value: "1,284", delta: "+3%" },
-    { label: "Pending Approvals", value: "18", delta: "-5" },
-    { label: "MFA Coverage", value: "96%", delta: "+1.2%" },
-    { label: "Policy Exceptions", value: "6", delta: "+1" }
-  ];
-  const approvals = [
+  const breadcrumbs = useAdminBreadcrumbs();
+
+  const approvalColumns: TableColumn<Approval>[] = [
     {
-      id: "APR-1021",
-      requester: "s.lopez@finserve.com",
-      lob: "Wealth",
-      role: "Advisor",
-      risk: "Low",
-      eta: "2h"
+      key: "id",
+      header: "Request ID",
+      className: "col-tight",
+      render: (row) => (
+        <Link className="link" to={`/approvals/${row.id}`}>
+          {row.id}
+        </Link>
+      ),
     },
+    { key: "requester", header: "Requester" },
+    { key: "lob", header: "LOB" },
+    { key: "role", header: "Role" },
     {
-      id: "APR-1017",
-      requester: "k.patel@finserve.com",
-      lob: "Treasury",
-      role: "Manager",
-      risk: "Medium",
-      eta: "4h"
-    }
+      key: "risk",
+      header: "Risk",
+      className: "col-tight col-status",
+      render: (row) => <RiskBadge risk={row.risk} />,
+    },
+    { key: "eta", header: "ETA", className: "col-tight col-number" },
+    {
+      key: "actions",
+      header: "Action",
+      className: "col-tight",
+      render: (row) => (
+        <>
+          <Link className="ghost button-link" to={`/approvals/${row.id}`}>
+            Review
+          </Link>
+          <button type="button">Approve</button>
+        </>
+      ),
+    },
   ];
-  const audit = [
-    "Role change for j.smith@finserve.com",
-    "MFA reset approved for a.patel@finserve.com",
-    "Access revoked for contractor m.lee@finserve.com"
+
+  const accessColumns: TableColumn<AccessRow>[] = [
+    {
+      key: "user",
+      header: "User",
+      render: (row) => (
+        <Link className="link" to={`/users/${row.user}`}>
+          {row.user}
+        </Link>
+      ),
+    },
+    { key: "lob", header: "LOB" },
+    { key: "role", header: "Role" },
+    {
+      key: "status",
+      header: "Status",
+      className: "col-tight col-status",
+      render: (row) => <StatusBadge status={row.status} />,
+    },
+    { key: "updated", header: "Last Updated", className: "col-tight" },
+    {
+      key: "actions",
+      header: "Actions",
+      className: "col-tight",
+      render: (row) => (
+        <>
+          <Link className="ghost button-link" to={`/users/${row.user}`}>
+            View
+          </Link>
+          <button type="button">Revoke</button>
+        </>
+      ),
+    },
   ];
+
+  const accessRowsWithUpdated = accessRows.map((row) => ({ ...row, updated: "Today" }));
 
   return (
     <div className="mfe">
-      <MfeBreadcrumbs />
-      <header className="mfe-header">
-        <div>
-          <h1>Access Governance</h1>
-          <p className="subtitle">
-            Review approvals, enforce RBAC policies, and track audit events.
-          </p>
-        </div>
-        <div className="header-actions">
-          <button
-            type="button"
-            className="ghost"
-            aria-pressed={compactRows}
-            onClick={() => setCompactRows((current) => !current)}
-          >
-            {compactRows ? "Comfortable rows" : "Compact rows"}
-          </button>
-          <button type="button" className="ghost">
-            Export Report
-          </button>
-          <button type="button">New Policy</button>
-        </div>
-      </header>
-
-      <section className="kpi-grid">
-        {kpis.map((kpi) => (
-          <article key={kpi.label} className="kpi-card">
-            <p className="kpi-label">{kpi.label}</p>
-            <div className="kpi-row">
-              <span className="kpi-value">{kpi.value}</span>
-              <span className="kpi-delta">{kpi.delta}</span>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="panel form-panel">
-        <form className="filter-form">
-          <div className="field">
-            <label htmlFor="search">Search</label>
-            <input id="search" placeholder="User, team, or role" />
-          </div>
-          <div className="field">
-            <label htmlFor="lob">Line of business</label>
-            <select id="lob">
-              <option>All lines</option>
-              <option>Retail Banking</option>
-              <option>Wealth</option>
-              <option>Treasury</option>
-              <option>Insurance</option>
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="role">Role</label>
-            <select id="role">
-              <option>All roles</option>
-              <option>Analyst</option>
-              <option>Advisor</option>
-              <option>Manager</option>
-              <option>Admin</option>
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="status">Status</label>
-            <select id="status">
-              <option>All statuses</option>
-              <option>Active</option>
-              <option>Pending</option>
-              <option>Revoked</option>
-            </select>
-          </div>
-          <div className="form-actions">
-            <button type="button" className="ghost">
-              Reset
+      <Breadcrumbs items={breadcrumbs} />
+      <PageHeader
+        title="Access Governance"
+        subtitle="Review approvals, enforce RBAC policies, and track audit events."
+        actions={
+          <>
+            <button
+              type="button"
+              className="ghost"
+              aria-pressed={compactRows}
+              onClick={() => setCompactRows((c) => !c)}
+            >
+              {compactRows ? "Comfortable rows" : "Compact rows"}
             </button>
-            <button type="submit">Apply Filters</button>
-          </div>
-        </form>
-      </section>
+            <button type="button" className="ghost">
+              Export Report
+            </button>
+            <button type="button">New Policy</button>
+          </>
+        }
+      />
+
+      <KPIGrid kpis={kpis} />
+
+      <Panel className="form-panel">
+        <FilterForm fields={filterFields} />
+      </Panel>
 
       <section className="content-split">
         <div className="main-stack">
-          <section className="panel">
-            <div className="panel-header">
-              <h2>Pending Approvals</h2>
-              <span className="pill">SLA 24h</span>
-            </div>
-            <table className={`data-table${compactRows ? " compact" : ""}`}>
-              <thead>
-                <tr>
-                  <th className="col-tight">Request ID</th>
-                  <th>Requester</th>
-                  <th>LOB</th>
-                  <th>Role</th>
-                  <th className="col-tight col-status">Risk</th>
-                  <th className="col-tight col-number">ETA</th>
-                  <th className="col-tight">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {approvals.map((item) => (
-                  <tr key={item.id}>
-                    <td className="col-tight">
-                      <Link className="link" to={`/approvals/${item.id}`}>
-                        {item.id}
-                      </Link>
-                    </td>
-                    <td>{item.requester}</td>
-                    <td>{item.lob}</td>
-                    <td>{item.role}</td>
-                    <td className="col-tight col-status">
-                      <span className={`risk ${item.risk.toLowerCase()}`}>
-                        {item.risk}
-                      </span>
-                    </td>
-                    <td className="col-tight col-number">{item.eta}</td>
-                    <td className="col-tight">
-                      <Link className="ghost button-link" to={`/approvals/${item.id}`}>
-                        Review
-                      </Link>
-                      <button type="button">Approve</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+          <Panel>
+            <PanelHeader title="Pending Approvals" badge={<Pill>SLA 24h</Pill>} />
+            <DataTable
+              columns={approvalColumns}
+              rows={approvals}
+              keyField="id"
+              compact={compactRows}
+            />
+          </Panel>
 
-          <section className="panel">
-            <div className="panel-header">
-              <h2>Access Directory</h2>
-              <button type="button" className="ghost">
-                Export
-              </button>
-            </div>
-            <table className={`data-table${compactRows ? " compact" : ""}`}>
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>LOB</th>
-                  <th>Role</th>
-                  <th className="col-tight col-status">Status</th>
-                  <th className="col-tight">Last Updated</th>
-                  <th className="col-tight">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accessRows.map((row) => (
-                  <tr key={row.user + row.lob}>
-                    <td>
-                      <Link className="link" to={`/users/${row.user}`}>
-                        {row.user}
-                      </Link>
-                    </td>
-                    <td>{row.lob}</td>
-                    <td>{row.role}</td>
-                    <td className="col-tight col-status">
-                      <span className={`status ${row.status.toLowerCase()}`}>
-                        {row.status}
-                      </span>
-                    </td>
-                    <td className="col-tight">Today</td>
-                    <td className="col-tight">
-                      <Link className="ghost button-link" to={`/users/${row.user}`}>
-                        View
-                      </Link>
-                      <button type="button">Revoke</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+          <Panel>
+            <PanelHeader
+              title="Access Directory"
+              actions={
+                <button type="button" className="ghost">
+                  Export
+                </button>
+              }
+            />
+            <DataTable
+              columns={accessColumns}
+              rows={accessRowsWithUpdated}
+              keyField="user"
+              compact={compactRows}
+            />
+          </Panel>
         </div>
 
         <aside className="panel audit-panel">
-          <div className="panel-header">
-            <h3>Audit Highlights</h3>
-            <button type="button" className="ghost">
-              View Log
-            </button>
-          </div>
+          <PanelHeader
+            title="Audit Highlights"
+            titleLevel="h3"
+            actions={
+              <button type="button" className="ghost">
+                View Log
+              </button>
+            }
+          />
           <ul className="audit-list">
             {audit.map((entry) => (
               <li key={entry}>{entry}</li>
@@ -290,92 +295,64 @@ function AdminDashboard() {
 
 function ApprovalDetail() {
   const { id } = useParams();
+  const breadcrumbs = useAdminBreadcrumbs();
+
   return (
     <div className="mfe">
-      <MfeBreadcrumbs />
-      <header className="mfe-header">
-        <div>
-          <h1>Approval {id}</h1>
-          <p className="subtitle">
-            Review request details, risk indicators, and routing.
-          </p>
-        </div>
-        <div className="header-actions">
-          <Link className="ghost button-link" to="/">
-            Back to approvals
-          </Link>
-          <button type="button">Approve</button>
-        </div>
-      </header>
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Request Summary</h2>
-          <span className="pill">Medium risk</span>
-        </div>
-        <div className="detail-grid">
-          <div>
-            <p className="detail-label">Requester</p>
-            <strong>k.patel@finserve.com</strong>
-          </div>
-          <div>
-            <p className="detail-label">Line of Business</p>
-            <strong>Treasury</strong>
-          </div>
-          <div>
-            <p className="detail-label">Role</p>
-            <strong>Manager</strong>
-          </div>
-          <div>
-            <p className="detail-label">ETA</p>
-            <strong>4 hours</strong>
-          </div>
-        </div>
-      </section>
+      <Breadcrumbs items={breadcrumbs} />
+      <PageHeader
+        title={`Approval ${id}`}
+        subtitle="Review request details, risk indicators, and routing."
+        actions={
+          <>
+            <Link className="ghost button-link" to="/">
+              Back to approvals
+            </Link>
+            <button type="button">Approve</button>
+          </>
+        }
+      />
+      <Panel>
+        <PanelHeader title="Request Summary" badge={<Pill>Medium risk</Pill>} />
+        <DetailGrid>
+          <DetailItem label="Requester" value="k.patel@finserve.com" />
+          <DetailItem label="Line of Business" value="Treasury" />
+          <DetailItem label="Role" value="Manager" />
+          <DetailItem label="ETA" value="4 hours" />
+        </DetailGrid>
+      </Panel>
     </div>
   );
 }
 
 function UserDetail() {
   const { id } = useParams();
+  const breadcrumbs = useAdminBreadcrumbs();
+
   return (
     <div className="mfe">
-      <MfeBreadcrumbs />
-      <header className="mfe-header">
-        <div>
-          <h1>User Access</h1>
-          <p className="subtitle">Review access grants and recent activity.</p>
-        </div>
-        <div className="header-actions">
-          <Link className="ghost button-link" to="/">
-            Back to directory
-          </Link>
-          <button type="button">Suspend Access</button>
-        </div>
-      </header>
-      <section className="panel">
-        <div className="panel-header">
-          <h2>{id}</h2>
-          <span className="pill">Active</span>
-        </div>
-        <div className="detail-grid">
-          <div>
-            <p className="detail-label">Primary Role</p>
-            <strong>Analyst</strong>
-          </div>
-          <div>
-            <p className="detail-label">Line of Business</p>
-            <strong>Retail Banking</strong>
-          </div>
-          <div>
-            <p className="detail-label">Last Updated</p>
-            <strong>Today</strong>
-          </div>
-          <div>
-            <p className="detail-label">MFA Status</p>
-            <strong>Enabled</strong>
-          </div>
-        </div>
-      </section>
+      <Breadcrumbs items={breadcrumbs} />
+      <PageHeader
+        title="User Access"
+        subtitle="Review access grants and recent activity."
+        actions={
+          <>
+            <Link className="ghost button-link" to="/">
+              Back to directory
+            </Link>
+            <button type="button">Suspend Access</button>
+          </>
+        }
+      />
+      <Panel>
+        <PanelHeader title={id || "User"} badge={<Pill>Active</Pill>} />
+        <DetailGrid>
+          <DetailItem label="Primary Role" value="Analyst" />
+          <DetailItem label="Line of Business" value="Retail Banking" />
+          <DetailItem label="Last Updated" value="Today" />
+          <DetailItem label="MFA Status" value="Enabled" />
+        </DetailGrid>
+      </Panel>
     </div>
   );
 }
